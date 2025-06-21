@@ -1,0 +1,9 @@
+Django>=4.2,<5.0
+gunicorn
+psycopg2-binary
+python-dotenv
+djangorestframework
+Pillow
+whitenoise
+uuid
+yookassa

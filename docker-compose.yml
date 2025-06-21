@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: shopdb
+      POSTGRES_USER: shopuser
+      POSTGRES_PASSWORD: shoppass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./admin/media:/app/media
+      - ./backup:/docker-entrypoint-initdb.d
+    networks:
+      - shopnet
+
+  admin:
+    build: ./admin
+    restart: always
+    env_file: .env
+    volumes:
+      - ./admin:/app
+      - ./staticfiles:/app/staticfiles
+      - ./admin/media:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - shopnet
+    command: sh /app/entrypoint.sh
+
+  bot:
+    build: ./bot
+    restart: always
+    env_file: .env
+    volumes:
+      - ./bot:/app
+      - ./admin/shop_project:/app/shop_project  
+      - ./admin/store:/app/store
+      - ./admin/media:/app/media
+    depends_on:
+      - admin
+    networks:
+      - shopnet
+    environment:
+      - PYTHONPATH=/app:/app/shop_project  
+    command: python main.py
+
+volumes:
+  pgdata:
+
+networks:
+  shopnet:

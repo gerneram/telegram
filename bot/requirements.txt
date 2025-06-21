@@ -1,0 +1,9 @@
+aiogram==3.*
+python-dotenv
+psycopg[binary]
+django  
+djangorestframework
+asgiref
+openpyxl
+uuid
+yookassa
