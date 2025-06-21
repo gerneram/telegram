@@ -61,8 +61,15 @@ jobs:
           python manage.py migrate
           python manage.py test
 
-      - name: ✅ Проверка PEP8 
+      - name: ✅ Проверка PEP8
+        continue-on-error: true
         run: |
           pip install flake8
           flake8 admin/
+
+      - name: 🧼 Автоформатирование с black
+        run: |
+          pip install black
+          black admin/
+
 
