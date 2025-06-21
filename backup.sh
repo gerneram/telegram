@@ -9,10 +9,8 @@ LATEST_BACKUP="$BACKUP_DIR/backup_latest.sql"
 
 mkdir -p "$BACKUP_DIR"
 
-# Исправлено имя контейнера!
 docker exec project-db-1 pg_dump -U shopuser shopdb > "$BACKUP_FILE"
 
-# Также обновим latest
 cp "$BACKUP_FILE" "$LATEST_BACKUP"
 
 echo "✅ Бэкап сохранён в $BACKUP_FILE"
