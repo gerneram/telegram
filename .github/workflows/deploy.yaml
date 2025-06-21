@@ -1,0 +1,65 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: shopdb
+          POSTGRES_USER: shopuser
+          POSTGRES_PASSWORD: shoppass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      POSTGRES_DB: shopdb
+      POSTGRES_USER: shopuser
+      POSTGRES_PASSWORD: shoppass
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      SECRET_KEY: testsecret
+      DEBUG: true
+      YOOKASSA_SHOP_ID: dummy
+      YOOKASSA_SECRET_KEY: dummy
+      BOT_TOKEN: dummy
+      RETURN_URL: https://t.me/your_bot
+      LINK: 127.0.0.1
+
+    steps:
+      - name: 📥 Checkout репозиторий
+        uses: actions/checkout@v3
+
+      - name: 🐍 Установка Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: 📦 Установка зависимостей
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r admin/requirements.txt
+
+      - name: 🚀 Прогон миграций и тестов
+        working-directory: ./admin
+        run: |
+          python manage.py migrate
+          python manage.py test
+
+      - name: ✅ Проверка PEP8 
+        run: |
+          pip install flake8
+          flake8 admin/
+

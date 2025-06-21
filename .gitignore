@@ -25,7 +25,7 @@ logs/
 Thumbs.db
 
 .env
-.env.*
+
 
 .cache/
 pytest_cache/

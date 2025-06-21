@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from rest_framework import generics
 from .models import Product, Order
 from .serializers import ProductSerializer
+from django.views.decorators.csrf import csrf_exempt
+
 
 class ProductListAPIView(generics.ListAPIView):
     queryset = Product.objects.all()
